@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 Water Level Sensor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js"></script>
+    <script src="static/display_raw.js"></script>
+    <script src="static/display_static.js"></script>
+</head>
+<body>    
+    <h1>Received Message:</h1>
+    <h2 id="messageDisplay">Loading...</h2>
+    <h3 id="scaledDisplay">Loading...</h3>
+    <div>
+      <canvas id="lineGraph"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <canvas id="lineChart" width="800" height="400"></canvas>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Random Numbers',
+                        data: [],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: [{
+                            type: 'time',
+                            position: 'bottom',
+                            time: {
+                                unit: 'second'
+                            }
+                        }],
+                        y: [{
+                            type: 'linear',
+                            position: 'left'
+                        }]
+                    }
+                }
+            });
+
+            function updateChart(data) {
+                myChart.data.labels.push(data.timestamp);
+                myChart.data.datasets[0].data.push(data.data);
+
+                // Limit the number of data points shown on the chart (e.g., keep the last 20)
+                if (myChart.data.labels.length > 20) {
+                    myChart.data.labels.shift();
+                    myChart.data.datasets[0].data.shift();
+                }
+
+                myChart.update();
+            }
+
+            function fetchData() {
+                // Get the timestamp of the last data point
+                var lastTimestamp = myChart.data.labels.length > 0 ? myChart.data.labels[myChart.data.labels.length - 1] : null;
+
+                // Fetch new data points since the last timestamp
+                fetch('/get_data?last_timestamp=' + lastTimestamp)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(updateChart);
+                    });
+            }
+
+            // Make an initial call to get_data to populate the chart with existing data
+            fetch('/get_data')
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(updateChart);
+                });
+
+            // Use setInterval to update the chart every second
+            setInterval(fetchData, 2000);
+        });
+    </script>
+</body>
+</html>

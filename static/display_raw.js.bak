@@ -1,0 +1,25 @@
+function updateMessage() {
+    // Make a request to the Flask server to get the latest message
+    fetch("http://127.0.0.1:5000/get_data")
+        .then(response => response.json())
+        .then(data => {
+            const messageDisplay = document.getElementById("messageDisplay");
+            if (data.length > 0) {
+                const latestMessage = data[data.length - 1];
+                messageDisplay.textContent = `Latest Data: ${latestMessage}`;
+            } else {
+                messageDisplay.textContent = "No data received yet";
+            }
+        })
+        .catch(error => {
+            const messageDisplay = document.getElementById("messageDisplay");
+            messageDisplay.textContent = `Error fetching data: ${error.message}`;
+        });
+}
+
+// Update the message initially
+updateMessage();
+
+// Update the message every 5 seconds (you can adjust this interval)
+setInterval(updateMessage, 500);
+
