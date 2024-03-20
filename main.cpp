@@ -47,14 +47,14 @@ void sendPressureData(long pressure) {
 }
 
 void loop() {
-  while (digitalRead(D2)) {}
+  while (digitalRead(D1)) {}
 
   long result = 0;
   for (int i = 0; i < 24; i++) {
-    digitalWrite(D3, HIGH);
-    digitalWrite(D3, LOW);
+    digitalWrite(D2, HIGH);
+    digitalWrite(D2, LOW);
     result = result << 1;
-    if (digitalRead(D2)) {
+    if (digitalRead(D1)) {
       result++;
     }
   }
@@ -62,8 +62,8 @@ void loop() {
   result = result ^ 0x800000;
 
   for (char i = 0; i < 3; i++) {
-    digitalWrite(D3, HIGH);
-    digitalWrite(D3, LOW);
+    digitalWrite(D2, HIGH);
+    digitalWrite(D2, LOW);
   }
 
   sendPressureData(result);
