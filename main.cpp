@@ -9,16 +9,13 @@ const char* serverUrl = "http://Example:5000";
 void setup() {
   pinMode(D1, INPUT);
   pinMode(D2, OUTPUT);
-  Serial.begin(9600);
-  WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(5000);
-    Serial.println("Connecting to WiFi...");
-  }
-
-  Serial.println("Connected to WiFi");
-
+  delay(1000);
+  Serial.print("Setting AP (Access Point)…");
+  WiFi.softAP(ssid, password);
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
 }
 
 void sendPressureData(long pressure) {

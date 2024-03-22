@@ -5,7 +5,7 @@ function updateScaledValues() {
             const scaledDisplay = document.getElementById("scaledDisplay");
             if (data.length > 0) {
                 const latestData = data[data.length - 1];
-                const scaledValue = ((latestData.data - 12852745 ) / (14000000 - 12852745)) * 100;
+                const scaledValue = ((latestData.data - 12852745 ) / (14473775 - 12852745)) * 100;
 
                 let color;
                 if (scaledValue <= 20) {
