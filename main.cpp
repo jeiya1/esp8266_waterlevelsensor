@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include "secrets.h"
 
-const char* ssid = "Example";
-const char* password = "Example";
+const char* ssid     = WIFI_SSID;
+const char* password = WIFI_PASS;
 const char* serverUrl = "http://Example:5000";
 
 void setup() {
